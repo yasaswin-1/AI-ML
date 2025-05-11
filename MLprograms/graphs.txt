@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create a simple data frame
+data = {
+    'Category': ['A', 'B', 'C', 'D', 'E'],
+    'Value1': [10, 20, 30, 40, 50],
+    'Value2': [15, 25, 35, 45, 55]
+}
+df = pd.DataFrame(data)
+
+# Scatter plot
+plt.figure(figsize=(6, 4))
+plt.scatter(df['Value1'], df['Value2'], color='blue')
+plt.title('Scatter Plot')
+plt.xlabel('Value1')
+plt.ylabel('Value2')
+plt.grid()
+plt.show()
+
+# Boxplot
+plt.figure(figsize=(6, 4))
+sns.boxplot(data=df[['Value1', 'Value2']])
+plt.title('Boxplot')
+plt.show()
+
+# Barplot
+plt.figure(figsize=(6, 4))
+sns.barplot(x='Category', y='Value1', data=df, palette='viridis')
+plt.title('Barplot')
+plt.show()
+
+# Histogram
+plt.figure(figsize=(6, 4))
+plt.hist(df['Value1'], bins=5, color='purple', alpha=0.7)
+plt.title('Histogram')
+plt.xlabel('Value1')
+plt.ylabel('Frequency')
+plt.grid()
+plt.show()
+
+# Heatmap
+plt.figure(figsize=(6, 4))
+correlation_matrix = df[['Value1', 'Value2']].corr()
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Heatmap - Correlation Matrix')
+plt.show()

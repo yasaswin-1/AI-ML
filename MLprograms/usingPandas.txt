@@ -1,0 +1,235 @@
+
+import pandas as pd
+ipl_auction_df=pd.read_csv('ipl_auction.csv')
+ipl_auction_df.head(7)
+
+
+# In[48]:
+
+
+#Grouping and Aggregating
+ipl_auction_df.groupby('AGE')['SOLD PRICE'].mean()
+
+
+# In[49]:
+
+
+soldprice_by_age=ipl_auction_df.groupby('AGE')['SOLD PRICE'].mean().reset_index()
+print(soldprice_by_age)
+
+
+# In[50]:
+
+
+#Grouping using multiple columns
+soldprice_by_age_role=ipl_auction_df.groupby(['AGE','PLAYING ROLE'])['SOLD PRICE'].mean().reset_index()
+print(soldprice_by_age_role)
+
+
+# In[51]:
+
+
+#Joining Data Frames
+soldprice_comparison=soldprice_by_age_role.merge(soldprice_by_age,on='AGE',how='outer')
+print(soldprice_comparison)
+
+
+# In[52]:
+
+
+#Renaming Columns
+soldprice_comparison.rename(columns={'SOLD PRICE_x':'SOLD_PRICE_AGE_ROLE','SOLD PRICE_y':'SOLD_PRICE_AGE'},inplace=True)
+soldprice_comparison.head(4)
+
+
+# In[53]:
+
+
+#Filtering Records based on Conditions
+ipl_auction_df[ipl_auction_df['SIXERS']>80][['PLAYER NAME','SIXERS']]
+
+
+# In[54]:
+
+
+#Removing a Column or a Row from a Data set
+#To drop a column, pass column name and axis as 1
+#To drop a row, pass row index and axis as 0
+ipl_auction_df.drop('SR-BL',inplace=True,axis=1)
+ipl_auction_df.columns
+
+
+# In[55]:
+
+
+autos=pd.read_csv('auto-mpg.data-original', sep = '\s+', header = None)
+autos.head(10)
+
+
+# In[56]:
+
+
+autos.columns=['mpg','cylinders','displacement','horsepower','weight','acceleration','model_year','origin','car_name']
+
+
+# In[57]:
+
+
+autos.head()
+
+
+# In[58]:
+
+
+autos.info()
+
+
+# In[59]:
+
+
+#If any column is inferre as object instead of float64, we can use pd.to_numeric() method
+#Use 'coerce' to fill invalid parameters with NaN values
+# autos['horsepower']=pd.to_numeric(autos['horsepower'],errors='coerce')
+
+
+# In[60]:
+
+
+#EXPLORATION OF DATA USING VISUALIZATION
+import matplotlib.pyplot as plt
+import seaborn as sn
+# To display the plots on Jupyter Notebook, we need to provide a directive %matplotlib inline
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[61]:
+
+
+#Bar Chart
+sn.barplot(x='AGE', y='SOLD PRICE', data=soldprice_by_age);
+
+
+# In[62]:
+
+
+sn.barplot(x='AGE', y='SOLD_PRICE_AGE_ROLE', hue='PLAYING ROLE', data=soldprice_comparison);
+
+
+# In[63]:
+
+
+#Histogram
+plt.hist(ipl_auction_df['SOLD PRICE']);
+
+
+# In[64]:
+
+
+#By default 10 bins, we can increase if we want
+plt.hist(ipl_auction_df['SOLD PRICE'], bins=20);
+
+
+# In[65]:
+
+
+#Distribution or Density Plot
+sn.distplot(ipl_auction_df['SOLD PRICE']);
+
+
+# In[66]:
+
+
+#Box Plot
+box=sn.boxplot(ipl_auction_df['SOLD PRICE']);
+
+
+# In[67]:
+
+
+box=plt.boxplot(ipl_auction_df['SOLD PRICE']);
+
+
+# In[68]:
+
+
+#The caps key in box variable returns min and max values of the distribution
+[item.get_ydata()[0] for item in box['caps']]
+
+
+# In[69]:
+
+
+#The whiskers key in box variable returns the values at 25 and 75 quantiles
+[item.get_ydata()[0] for item in box['whiskers']]
+
+
+# In[70]:
+
+
+#The medians key in box variable returns the median value of the distribution
+[item.get_ydata()[0] for item in box['medians']]
+
+
+# In[71]:
+
+
+#Outliers from Box Plot
+ipl_auction_df[ipl_auction_df['SOLD PRICE']>1350000.0][['PLAYER NAME','PLAYING ROLE','SOLD PRICE']]
+
+
+# In[72]:
+
+
+#Comparing Distributions
+sn.distplot(ipl_auction_df[ipl_auction_df['CAPTAINCY EXP']==1]['SOLD PRICE'],color='y',label='Captaincy Experience');
+sn.distplot(ipl_auction_df[ipl_auction_df['CAPTAINCY EXP']==0]['SOLD PRICE'],color='r',label='No Captaincy Experience');
+plt.legend();
+
+
+# In[73]:
+
+
+#Box Plot of SOLD PRICE for different playing roles
+sn.boxplot(x='PLAYING ROLE',y='SOLD PRICE',data=ipl_auction_df);
+
+
+# In[74]:
+
+
+#Scatter Plot for SOLD PRICE vs SIXERS
+ipl_batsman_df=ipl_auction_df[ipl_auction_df['PLAYING ROLE']=='Batsman']
+plt.scatter(x=ipl_batsman_df.SIXERS,y=ipl_batsman_df['SOLD PRICE']);
+
+
+# In[75]:
+
+
+#Scatter Plot for SOLD PRICE vs SIXERS with Regression Line
+sn.regplot(x='SIXERS',y='SOLD PRICE',data=ipl_batsman_df);
+
+
+# In[80]:
+
+
+#Pair plot
+influential_features=['SR-B','AVE','SIXERS','SOLD PRICE']
+sn.pairplot(ipl_auction_df[influential_features],height=2);
+
+
+# In[84]:
+
+
+#Correlation and Heatmap
+print(ipl_auction_df[influential_features].corr());
+
+
+# In[87]:
+
+
+sn.heatmap(ipl_auction_df[influential_features].corr(),annot=True);
+
+
+# In[ ]:
+
+
+

@@ -1,0 +1,143 @@
+from sklearn.svm import SVC
+import pandas as pd
+from sklearn.metrics import accuracy_score,classification_report,confusion_matrix
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
+data = pd.read_csv('iris(1) - iris(1).csv')
+data.head()
+
+data.shape
+
+data.target.unique()
+
+data.info()
+
+data.describe()
+
+data.isnull().sum()
+
+from collections import Counter
+Counter(data.target)
+
+data.target.value_counts()
+
+X = data.iloc[:,:-1]
+y = data[['target']]
+
+X.head()
+
+y.head()
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=10,test_size=0.2)
+
+model = SVC()# c=1.0, kernel=rbf
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+print(classification_report(y_test,y_predict))
+
+confusion_matrix(y_test,y_predict)
+
+# Parameter Tuning
+model = SVC(C=0.1)# c=0.1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(C=10)# c=10
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(C=100)# c=100
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(C=1000)# c=1000
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+#gamma
+model = SVC(gamma=0.01)# gamma=0.01
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(gamma=0.1)# gamma=0.1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(gamma=1)# gamma=1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(gamma=10)# gamma=1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(gamma=100)# gamma=1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(C=100,gamma=0.1,kernel='linear')# gamma=1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+#Kernel
+model = SVC(kernel='linear')# gamma=1
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+model = SVC(kernel='poly')
+model.fit(X_train,y_train)
+y_predict = model.predict(X_test)
+accuracy_score(y_test,y_predict)
+
+# Visualisation
+df0 = data[:50]
+df1 = data[50:100]
+df2 = data[100:150]
+
+x = data.iloc[:100,:2]
+y = data.target[:100]
+
+plt.scatter(df0['sepal_length'],df0['sepal_width'],color='green',marker='+')
+plt.scatter(df2['sepal_length'],df2['sepal_width'],color='red',marker='*')
+plt.scatter(df1['sepal_length'],df1['sepal_width'],color='blue',marker='*')
+
+plt.scatter(df0['petal_length'],df0['petal_width'],color='green',marker='+')
+plt.scatter(df2['petal_length'],df2['petal_width'],color='red',marker='*')
+plt.scatter(df1['petal_length'],df1['petal_width'],color='blue',marker='*')
+
+import seaborn as sns
+sns.pairplot(data,hue="target", palette="CMRmap")
+
+import seaborn as sns
+sns.pairplot(data,hue ="target",palette="rainbow")
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+
+# Define parameter grid
+param_grid = {'C': [0.1, 1, 10, 100]}
+
+# Perform Grid Search
+grid_search = GridSearchCV(SVC(), param_grid, cv=5, scoring='accuracy')
+grid_search.fit(X_train, y_train)
+
+# Best parameter
+print("Best C:", grid_search.best_params_)
+print("Best accuracy:", grid_search.best_score_)
+
+
+
